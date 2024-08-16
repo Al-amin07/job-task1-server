@@ -34,10 +34,17 @@ async function run() {
         // All Products
         app.get('/all-products', async (req, res) => {
             const start = parseInt(req.query.start);
+            const sort = req.query.sort;
+            const search = req.query.search;
+            const {price} = req.query.price;
+            console.log(price)
+            const time = req.query.time;
+            let query = { productName: { $regex: search, $options: 'i' }, price: { $gte: 0, $lte:10000 } }
+            console.log(sort)
             const skipItem = 9 * (start - 1)
-            const result = await productsCollection.find().skip(skipItem).limit(9).toArray();
-            const totalResult = await productsCollection.countDocuments()
-            res.send({result, totalResult})
+            const result = await productsCollection.find(query).sort({ price: sort === 'asc' ? 1 : -1 }, { creationDate: time === true ? 1 : -1 }).skip(skipItem).limit(9).toArray();
+            const totalResult = await productsCollection.countDocuments(query)
+            res.send({ result, totalResult })
         })
 
         // Get Token 
@@ -51,17 +58,17 @@ async function run() {
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
                 })
-                .send({message: 'Get Token'});
+                .send({ message: 'Get Token' });
         })
 
-        app.get('/logout', async(req, res) => {
+        app.get('/logout', async (req, res) => {
             res
-            .clearCookie('token',  {
-                maxAge: 0,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-              })
-              .send({message: 'Log Out'})
+                .clearCookie('token', {
+                    maxAge: 0,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+                })
+                .send({ message: 'Log Out' })
         })
 
         await client.db("admin").command({ ping: 1 });
