@@ -36,15 +36,19 @@ async function run() {
             const start = parseInt(req.query.start);
             const sort = req.query.sort;
             const search = req.query.search;
+            const category = req.query.category;
+            const brand = req.query.brand;
             const minPrice = parseInt(req.query.minPrice);
             const maxPrice = parseInt(req.query.maxPrice);
-            console.log(minPrice, maxPrice)
+          console.log(brand)
             const time = req.query.time;
             const sortCriteria = {
                 price: sort === 'asc' ? 1 : -1,
                 creationDate: time === true ? 1 : -1
             };
             let query = { productName: { $regex: search, $options: 'i' }, price: { $gte: minPrice, $lte: maxPrice } }
+            if(category && category !== 'null') query.category = category
+            if(brand && brand !== 'null') query.brandName = brand
             const skipItem = 9 * (start - 1)
             const result = await productsCollection
             .find(query)
