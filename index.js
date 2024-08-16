@@ -36,13 +36,23 @@ async function run() {
             const start = parseInt(req.query.start);
             const sort = req.query.sort;
             const search = req.query.search;
-            const {price} = req.query.price;
-            console.log(price)
+            const minPrice = parseInt(req.query.minPrice);
+            const maxPrice = parseInt(req.query.maxPrice);
+            console.log(minPrice, maxPrice)
             const time = req.query.time;
-            let query = { productName: { $regex: search, $options: 'i' }, price: { $gte: 0, $lte:10000 } }
-            console.log(sort)
+            const sortCriteria = {
+                price: sort === 'asc' ? 1 : -1,
+                creationDate: time === true ? 1 : -1
+            };
+            let query = { productName: { $regex: search, $options: 'i' }, price: { $gte: minPrice, $lte: maxPrice } }
             const skipItem = 9 * (start - 1)
-            const result = await productsCollection.find(query).sort({ price: sort === 'asc' ? 1 : -1 }, { creationDate: time === true ? 1 : -1 }).skip(skipItem).limit(9).toArray();
+            const result = await productsCollection
+            .find(query)
+            .sort(sortCriteria)
+            .skip(skipItem)
+            .limit(9)
+            .toArray();
+            // const result = await productsCollection.find(query).sort({ price: sort === 'asc' ? 1 : -1 }, { creationDate: time === true ? 1 : -1 }).skip(skipItem).limit(9).toArray();
             const totalResult = await productsCollection.countDocuments(query)
             res.send({ result, totalResult })
         })
