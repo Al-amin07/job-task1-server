@@ -60,7 +60,7 @@ async function run() {
             res.send({ result, totalResult })
         })
 
-        app.post('/pro', async(req, res) => {
+        app.get('/pro', async(req, res) => {
             const result = await productsCollection.find().toArray();
             res.send(result)
         })
