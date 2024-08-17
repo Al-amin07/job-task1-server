@@ -1,4 +1,4 @@
-live link : https://trent-mart.web.app/
+live link : https://trend-mart-snowy.vercel.app
 
 Trend Mart is your go-to online destination for the latest and greatest in fashion, electronics, home goods, and more. We bring you a carefully curated selection of top-quality products that are not only trendy but also affordable. Whether you're looking to update your wardrobe, upgrade your gadgets, or find the perfect gift, Trend Mart has something for everyone.
 
