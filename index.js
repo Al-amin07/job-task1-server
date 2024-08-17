@@ -40,25 +40,29 @@ async function run() {
             const brand = req.query.brand;
             const minPrice = parseInt(req.query.minPrice);
             const maxPrice = parseInt(req.query.maxPrice);
-          console.log(brand)
+            console.log(brand)
             const time = req.query.time;
             const sortCriteria = {
                 price: sort === 'asc' ? 1 : -1,
                 creationDate: time === true ? 1 : -1
             };
             let query = { productName: { $regex: search, $options: 'i' }, price: { $gte: minPrice, $lte: maxPrice } }
-            if(category && category !== 'null') query.category = category
-            if(brand && brand !== 'null') query.brandName = brand
+            if (category && category !== 'null') query.category = category
+            if (brand && brand !== 'null') query.brandName = brand
             const skipItem = 9 * (start - 1)
             const result = await productsCollection
-            .find(query)
-            .sort(sortCriteria)
-            .skip(skipItem)
-            .limit(9)
-            .toArray();
-            // const result = await productsCollection.find(query).sort({ price: sort === 'asc' ? 1 : -1 }, { creationDate: time === true ? 1 : -1 }).skip(skipItem).limit(9).toArray();
+                .find(query)
+                .sort(sortCriteria)
+                .skip(skipItem)
+                .limit(9)
+                .toArray();
             const totalResult = await productsCollection.countDocuments(query)
             res.send({ result, totalResult })
+        })
+
+        app.post('/pro', async(req, res) => {
+            const result = await productsCollection.find().toArray();
+            res.send(result)
         })
 
         // Get Token 
